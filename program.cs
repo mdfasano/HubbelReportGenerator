@@ -10,10 +10,12 @@ namespace HubbelReportGenerator
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
 
             string csvFilePath = Path.Combine(baseDir, "../../../test_input/test1.csv");
-            string templateFilePath = Path.Combine(baseDir, "../../../Line_Test_Report_Template.docx");
+            string coverTemplateFilePath = Path.Combine(baseDir, "../../../templates/Coversheet_Template.docx");
+            string lineTemplateFilePath = Path.Combine(baseDir, "../../../templates/Line_Test_Report_Template.docx");
             string outputDirectory = Path.Combine(baseDir, "../../../test_output");
             Console.WriteLine(csvFilePath);
-            Console.WriteLine(templateFilePath);
+            Console.WriteLine(coverTemplateFilePath);
+            Console.WriteLine(lineTemplateFilePath);
             Console.WriteLine(outputDirectory);
 
             if (!Directory.Exists(outputDirectory))
@@ -24,9 +26,13 @@ namespace HubbelReportGenerator
 
             var coverData = new CoversheetData
             {
+                CsvFilePath = csvFilePath,
                 ProjectNumber = "PRJ-12345",
                 FileNumber = "FN-9876",
+                TrackingNumber = "testno1",
                 SampleCatNumber = "CAT-001",
+                Client = "dante",
+                Technician = "matt",
                 DutType = "GFCI Receptacle",
                 DutRating = "15A 125V",
                 DutResetType = "Auto",
@@ -37,9 +43,9 @@ namespace HubbelReportGenerator
 
             try
             {
-                var generator = new ReportGenerator(templateFilePath, outputDirectory);
+                var generator = new ReportGenerator(outputDirectory, coverData, lineTemplateFilePath, coverTemplateFilePath);
 
-                string generatedFilePath = generator.GenerateReport(csvFilePath, coverData);
+                string generatedFilePath = generator.GenerateReport();
 
                 Console.WriteLine("\nSuccess! Report generated.");
                 Console.WriteLine($"Saved to: {generatedFilePath}");
